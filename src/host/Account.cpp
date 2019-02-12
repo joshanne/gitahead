@@ -47,6 +47,71 @@ QString Account::password() const
   return password;
 }
 
+bool Account::hasPkcsFile() const {
+	return !mPkcsFile.isEmpty();
+}
+
+QString Account::pkcsFile() const {
+	QString pkcsFile = hasPkcsFile() ? mPkcsFile : "";
+	return pkcsFile;
+}
+
+void Account::setPkcsFile(const QString &pkcsFile){
+	mPkcsFile = pkcsFile;
+}
+
+bool Account::hasPkcsKey() const {
+	return !mPkcsKey.isEmpty();
+}
+
+QString Account::pkcsKey() const {
+	QString pkcsKey = hasPkcsKey() ? mPkcsKey : "";
+	return pkcsKey;
+}
+
+void Account::setPkcsKey(const QString &pkcsKey) {
+	mPkcsKey = pkcsKey;
+}
+
+bool Account::hasCertFile() const{
+	return !mCertFile.isEmpty();
+}
+
+QString Account::certFile() const{
+	QString certFile = hasCertFile() ? mCertFile : "";
+	return certFile;
+}
+
+void Account::setCertFile(const QString &certFile){
+	mCertFile = certFile;
+}
+
+bool Account::hasCertKeyFile() const{
+	return !mCertKeyFile.isEmpty();
+}
+
+QString Account::certKeyFile() const{
+	QString certKeyFile = hasCertKeyFile() ? mCertKeyFile : "";
+	return certKeyFile;
+}
+
+void Account::setCertKeyFile(const QString &certKeyFile){
+	mCertKeyFile = certKeyFile;
+}
+
+bool Account::hasCaCertFile() const{
+	return !mCaCertFile.isEmpty();
+}
+
+QString Account::caCertFile() const{
+	QString caCertFile = hasCaCertFile() ? mCaCertFile : "";
+	return caCertFile;
+}
+
+void Account::setCaCertFile(const QString &caCertFile){
+	mCaCertFile = caCertFile;
+}
+
 bool Account::hasCustomUrl() const
 {
   return !mUrl.isEmpty();
@@ -204,6 +269,7 @@ QString Account::defaultUrl(Kind kind)
     case Bitbucket: return Bitbucket::defaultUrl();
     case Beanstalk: return Beanstalk::defaultUrl();
     case GitLab:    return GitLab::defaultUrl();
+	default:        return "Unknown Account Kind";
   }
 }
 

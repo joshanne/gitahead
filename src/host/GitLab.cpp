@@ -16,6 +16,12 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QUrl>
+#include <QSslConfiguration>
+#include <QSslCertificate>
+#include <QSslKey>
+#include <QFile>
+#include <QSettings>
+#include "conf/Settings.h"
 
 namespace {
 
@@ -71,6 +77,11 @@ void GitLab::connect(const QString &defaultPassword)
 {
   clearRepos();
 
+  QSslConfiguration sslConfig;
+  QSslKey sslKey;
+  QSslCertificate sslCertificate;
+  QList<QSslCertificate> sslCaCertificates;
+
   QString token = defaultPassword;
   if (token.isEmpty())
     token = password();
@@ -80,8 +91,34 @@ void GitLab::connect(const QString &defaultPassword)
     return;
   }
 
+  if (hasPkcsFile())
+  {
+
+	  bool retval;
+	  QFile sslPkcsFile(pkcsFile());
+	  QString sslPassphrase = pkcsKey();
+
+	  if (sslPkcsFile.open(QFile::ReadOnly))
+	  {
+		retval = QSslCertificate::importPkcs12(&sslPkcsFile, &sslKey, &sslCertificate, &sslCaCertificates, QByteArray::fromStdString(sslPassphrase.toStdString()));
+		if (retval) {
+			sslConfig.setLocalCertificate(sslCertificate);
+			sslConfig.setPrivateKey(sslKey);
+			//sslConfig.setCaCertificates(sslCaCertificates);
+		}
+	  }
+	  
+	  log(QString("Importing of PKCS12 was %1").arg(retval ? "Successful!" : "Unsuccessful"));
+	  log(QString("URL: %1").arg(url()));
+	  log(QString("PKCS12 File: %1").arg(pkcsFile()));
+	  log(QString("PKCS12 Key: %1").arg(pkcsKey()));
+  }
+
+  log(QString("Issuer: %1").arg(sslCertificate.issuerDisplayName()));
+
   QNetworkRequest request(url() + kProjectsFmt.arg(token));
   request.setHeader(QNetworkRequest::ContentTypeHeader, kContentType);
+  request.setSslConfiguration(sslConfig);
   mMgr.get(request);
   startProgress();
 }
@@ -89,4 +126,15 @@ void GitLab::connect(const QString &defaultPassword)
 QString GitLab::defaultUrl()
 {
   return QStringLiteral("https://gitlab.com/api/v4");
+}
+
+
+void GitLab::log(const QString &text)
+{
+	QFile file(Settings::tempDir().filePath("gitlab.log"));
+	if (!file.open(QFile::WriteOnly | QIODevice::Append))
+		return;
+
+	QString time = QTime::currentTime().toString(Qt::ISODateWithMs);
+	QTextStream(&file) << time << " - " << text << endl;
 }

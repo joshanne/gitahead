@@ -77,10 +77,31 @@ AccountDialog::AccountDialog(Account *account, QWidget *parent)
     resize(sizeHint());
   });
 
+  mPkcsFile = new QLineEdit(advanced);
+  mPkcsFile->setText(account ? account->pkcsFile() : "");
+
+  mPkcsKey = new QLineEdit(advanced);
+  mPkcsKey->setText(account ? account->pkcsKey() : "");
+
+  mCertFile = new QLineEdit(advanced);
+  mCertFile->setText(account ? account->certFile() : "");
+
+  mCertKeyFile = new QLineEdit(advanced);
+  mCertKeyFile->setText(account ? account->certFile() : "");
+
+  mCaCertFile = new QLineEdit(advanced);
+  mCaCertFile->setText(account ? account->certFile() : "");
+
   QFormLayout *advancedForm = new QFormLayout(advanced);
   advancedForm->setContentsMargins(-1,0,0,0);
   advancedForm->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
   advancedForm->addRow(tr("URL:"), mUrl);
+  advancedForm->addRow(tr("PKCS12 File:"), mPkcsFile);
+  advancedForm->addRow(tr("PKCS12 Password:"), mPkcsKey);
+  advancedForm->addRow(tr("Certificate File:"), mCertFile);
+  advancedForm->addRow(tr("Certificate Key File:"), mCertKeyFile);
+  advancedForm->addRow(tr("CA Certificate File:"), mCaCertFile);
+
 
   connect(expand, &ExpandButton::toggled, [this, advanced](bool checked) {
     advanced->setVisible(checked);
@@ -129,6 +150,12 @@ void AccountDialog::accept()
   }
 
   Account *account = Accounts::instance()->createAccount(kind, username, url);
+  account->setPkcsFile(mPkcsFile->text());
+  account->setPkcsKey(mPkcsKey->text());
+  account->setCertFile(mCertFile->text());
+  account->setCertKeyFile(mCertKeyFile->text());
+  account->setCaCertFile(mCaCertFile->text());
+
   AccountProgress *progress = account->progress();
   connect(progress, &AccountProgress::finished, this, [this, account] {
     AccountError *error = account->error();

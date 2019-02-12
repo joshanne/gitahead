@@ -34,6 +34,11 @@ private:
   QLineEdit *mPassword;
   QLabel *mLabel;
   QLineEdit *mUrl;
+  QLineEdit *mPkcsFile;
+  QLineEdit *mPkcsKey;
+  QLineEdit *mCertFile;
+  QLineEdit *mCertKeyFile;
+  QLineEdit *mCaCertFile;
   QDialogButtonBox *mButtons;
 };
 

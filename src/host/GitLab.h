@@ -23,6 +23,10 @@ public:
   void connect(const QString &password = QString()) override;
 
   static QString defaultUrl();
+
+private:
+  void log(const QString &text);
+
 };
 
 #endif

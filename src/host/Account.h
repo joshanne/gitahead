@@ -58,6 +58,26 @@ public:
   QString username() const { return mUsername; }
   QString password() const;
 
+  bool hasPkcsFile() const;
+  QString pkcsFile() const;
+  void setPkcsFile(const QString &pkcsFile);
+
+  bool hasPkcsKey() const;
+  QString pkcsKey() const;
+  void setPkcsKey(const QString &pkcsKey);
+
+  bool hasCertFile() const;
+  QString certFile() const;
+  void setCertFile(const QString &certFile);
+
+  bool hasCertKeyFile() const;
+  QString certKeyFile() const;
+  void setCertKeyFile(const QString &certKeyFile);
+
+  bool hasCaCertFile() const;
+  QString caCertFile() const;
+  void setCaCertFile(const QString &caCertFile);
+
   bool hasCustomUrl() const;
   QString url() const;
   void setUrl(const QString &url);
@@ -115,6 +135,11 @@ protected:
   void startProgress();
   bool setHeaders(QNetworkRequest &request, const QString &defaultPassword);
 
+  QString mPkcsFile;
+  QString mPkcsKey;
+  QString mCertFile;
+  QString mCertKeyFile;
+  QString mCaCertFile;
   QString mUrl;
   QString mUsername;
   QString mAccessToken;

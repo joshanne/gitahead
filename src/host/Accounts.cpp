@@ -148,6 +148,11 @@ void Accounts::load()
     QString username = settings.value("username").toString();
     QString url = settings.value("url").toString();
     Account *account = createAccount(kind, username, url);
+	account->setPkcsFile(settings.value("pkcs_file").toString());
+	account->setPkcsKey(settings.value("pkcs_key").toString());
+	account->setCertFile(settings.value("cert_file").toString());
+	account->setCertKeyFile(settings.value("certkey_file").toString());
+	account->setCaCertFile(settings.value("cacert_file").toString());
 
     int repoCount = settings.beginReadArray("repos");
     for (int j = 0; j < repoCount; ++j) {
@@ -182,6 +187,11 @@ void Accounts::store()
     } else {
       settings.remove("url");
     }
+	settings.setValue("pkcs_file", account->pkcsFile());
+	settings.setValue("pkcs_key", account->pkcsKey());
+	settings.setValue("cert_file", account->certFile());
+	settings.setValue("certkey_file", account->certKeyFile());
+	settings.setValue("cacert_file", account->caCertFile());
 
     settings.beginWriteArray("repos");
     for (int j = 0; j < account->repositoryCount(); ++j) {

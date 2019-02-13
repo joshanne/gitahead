@@ -13,8 +13,10 @@
 #include "ui/ExpandButton.h"
 #include <QApplication>
 #include <QFormLayout>
+#include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QCheckBox>
 
 AccountDialog::AccountDialog(Account *account, QWidget *parent)
   : QDialog(parent)
@@ -77,30 +79,55 @@ AccountDialog::AccountDialog(Account *account, QWidget *parent)
     resize(sizeHint());
   });
 
-  mPkcsFile = new QLineEdit(advanced);
+  QHBoxLayout *lPkcs = new QHBoxLayout();
+  QCheckBox *mPkcsEnabled = new QCheckBox();
+  mPkcsFile = new QLineEdit();
   mPkcsFile->setText(account ? account->pkcsFile() : "");
+  mPkcsEnabled->setChecked(account ? account->hasPkcsFile() : false);
+  lPkcs->addWidget(mPkcsEnabled);
+  lPkcs->addWidget(mPkcsFile);
 
-  mPkcsKey = new QLineEdit(advanced);
+  QHBoxLayout *lPkcsKey = new QHBoxLayout();
+  QCheckBox *mPkcsKeyEnabled = new QCheckBox();
+  mPkcsKey = new QLineEdit();
   mPkcsKey->setText(account ? account->pkcsKey() : "");
+  mPkcsKeyEnabled->setChecked(account ? account->hasPkcsKey() : false);
+  lPkcsKey->addWidget(mPkcsKeyEnabled);
+  lPkcsKey->addWidget(mPkcsKey);
 
-  mCertFile = new QLineEdit(advanced);
+  QHBoxLayout *lCert = new QHBoxLayout();
+  QCheckBox *mCertEnabled = new QCheckBox();
+  mCertFile = new QLineEdit();
   mCertFile->setText(account ? account->certFile() : "");
+  mCertEnabled->setChecked(account ? account->hasCertFile() : false);
+  lCert->addWidget(mCertEnabled);
+  lCert->addWidget(mCertFile);
 
-  mCertKeyFile = new QLineEdit(advanced);
+  QHBoxLayout *lCertKey = new QHBoxLayout();
+  QCheckBox *mCertKeyEnabled = new QCheckBox();
+  mCertKeyFile = new QLineEdit();
   mCertKeyFile->setText(account ? account->certFile() : "");
+  mCertKeyEnabled->setChecked(account ? account->hasCertKeyFile() : false);
+  lCertKey->addWidget(mCertKeyEnabled);
+  lCertKey->addWidget(mCertKeyFile);
 
-  mCaCertFile = new QLineEdit(advanced);
+  QHBoxLayout *lCaCert = new QHBoxLayout();
+  QCheckBox *mCaCertEnabled = new QCheckBox();
+  mCaCertFile = new QLineEdit();
   mCaCertFile->setText(account ? account->certFile() : "");
+  mCaCertEnabled->setChecked(account ? account->hasCaCertFile() : false);
+  lCaCert->addWidget(mCaCertEnabled);
+  lCaCert->addWidget(mCaCertFile);
 
   QFormLayout *advancedForm = new QFormLayout(advanced);
   advancedForm->setContentsMargins(-1,0,0,0);
   advancedForm->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
   advancedForm->addRow(tr("URL:"), mUrl);
-  advancedForm->addRow(tr("PKCS12 File:"), mPkcsFile);
-  advancedForm->addRow(tr("PKCS12 Password:"), mPkcsKey);
-  advancedForm->addRow(tr("Certificate File:"), mCertFile);
-  advancedForm->addRow(tr("Certificate Key File:"), mCertKeyFile);
-  advancedForm->addRow(tr("CA Certificate File:"), mCaCertFile);
+  advancedForm->addRow(tr("PKCS12 File:"), lPkcs);
+  advancedForm->addRow(tr("PKCS12 Password:"), lPkcsKey);
+  advancedForm->addRow(tr("Certificate File:"), lCert);
+  advancedForm->addRow(tr("Certificate Key File:"), lCertKey);
+  advancedForm->addRow(tr("CA Certificate File:"), lCaCert);
 
 
   connect(expand, &ExpandButton::toggled, [this, advanced](bool checked) {
